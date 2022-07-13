@@ -11,3 +11,7 @@ Enabled `RGB_DISABLE_TIMEOUT` and `RGB_DISABLE_WHEN_USB_SUSPENDED` to turn off a
 Disabled various unwanted RGB effects.
 
 Enabled typing heatmap, and made the default when waking from sleep.
+
+## flashing
+
+I couldn't get the bootmagic lite method of flashing to work (hold ESC while plugging in cable), but I found the I could enable command mode. After flashing the first time (which requires plugging in while holding reset button, which is under the spacebar), the bootloader can be entered at any time by pressing left+right-alt+control+shift-b.
