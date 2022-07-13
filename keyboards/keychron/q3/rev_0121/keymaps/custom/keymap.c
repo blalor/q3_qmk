@@ -15,7 +15,7 @@
  */
 
 #include QMK_KEYBOARD_H
-#include "test.h"
+// #include "test.h"
 
 enum layers{
     MAC_BASE,
@@ -155,11 +155,11 @@ void matrix_scan_user(void) {
 #endif
 }
 
-bool dip_switch_update_user(uint8_t index, bool active) {
-    /* Send default layer state to host */
-    system_switch_state_report(index, active);
-    return true;
-}
+// bool dip_switch_update_user(uint8_t index, bool active) {
+//     /* Send default layer state to host */
+//     system_switch_state_report(index, active);
+//     return true;
+// }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -213,5 +213,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;  // Skip all further processing of this key
         default:
             return true;  // Process all other keycodes normally
+    }
+}
+
+// https://docs.qmk.fm/#/feature_rgb_matrix?id=indicators
+void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    if (get_highest_layer(layer_state) > 0) {
+        uint8_t layer = get_highest_layer(layer_state);
+
+        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+                uint8_t index = g_led_config.matrix_co[row][col];
+
+                if (index >= led_min && index <= led_max && index != NO_LED &&
+                keymap_key_to_keycode(layer, (keypos_t){col,row}) > KC_TRNS) {
+                    rgb_matrix_set_color(index, RGB_GREEN);
+                }
+            }
+        }
     }
 }
