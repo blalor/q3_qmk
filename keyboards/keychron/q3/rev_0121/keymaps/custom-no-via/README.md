@@ -1,6 +1,6 @@
 This is my custom keymap. 
 
-My starting point was the `keychron/q3/q3_ansi_stm32l432_ec11` keyboard. I added this `custom` keymap, copying the `via` one. `config.h` changes the selection of RGB effects (based on what’s enabled in `keychron/q3/config.h`). If you compare my `keymap.c` against `via/keymap.c` you’ll see the changes I made. Seems to work fine with Via so far, although the first time I flashed the keyboard I lost my customizations, so back those up first.
+My starting point was the `keychron/q3/rev_0121` keyboard. I added the `custom` keymap, copying the `via` one, then created this `custom-no-via` keymap and dropped VIA support. `config.h` changes the selection of RGB effects (based on what’s enabled in `keychron/q3/config.h`). If you compare my `keymap.c` against `via/keymap.c` you’ll see the changes I made. 
 
 ## notable changes
 
