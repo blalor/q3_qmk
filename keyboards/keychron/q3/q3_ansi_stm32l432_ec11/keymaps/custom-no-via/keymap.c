@@ -1,5 +1,13 @@
 #include QMK_KEYBOARD_H
 
+#include "qmk_rc.h"
+#include "print.h"
+
+// top row, 2nd in from right
+#define MIC_INDICATOR_IDX 14
+bool mic_is_enabled = false;
+bool mic_is_muted = false;
+
 enum layers{
     MAC_BASE,
     MAC_FN,
@@ -202,9 +210,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // https://docs.qmk.fm/#/feature_rgb_matrix?id=indicators
 void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    if (get_highest_layer(layer_state) > 0) {
-        uint8_t layer = get_highest_layer(layer_state);
-
+    uint8_t layer = get_highest_layer(layer_state);
+    if (layer > 0) {
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
                 uint8_t index = g_led_config.matrix_co[row][col];
@@ -216,4 +223,51 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             }
         }
     }
+
+    //
+    if (mic_is_enabled) {
+        if (mic_is_muted) {
+            rgb_matrix_set_color(MIC_INDICATOR_IDX, RGB_RED);
+        } else {
+            rgb_matrix_set_color(MIC_INDICATOR_IDX, RGB_GREEN);
+        }
+    }
 }
+
+#ifdef RAW_ENABLE
+#define QMK_RC_BUFFER_MAX 64
+uint8_t qmk_rc_buffer[QMK_RC_BUFFER_MAX] = {};
+
+void raw_hid_receive(uint8_t *data, uint8_t length) {
+    qmk_rc_receive(qmk_rc_buffer, QMK_RC_BUFFER_MAX, data, length);
+}
+
+enum custom_rc_commands {
+    SET_MIC_ON = 50,
+    SET_MIC_OFF,
+    SET_MUTE_ON,
+    SET_MUTE_OFF,
+};
+
+void qmk_rc_process_command_user(qmk_rc_command_t* command) {
+    xprintf("qmk_rc_process_command_user id %02d\n", command->id);
+
+    switch (command->id) {
+        case SET_MIC_ON:
+            mic_is_enabled = true;
+            break;
+
+        case SET_MIC_OFF:
+            mic_is_enabled = false;
+            break;
+
+        case SET_MUTE_ON:
+            mic_is_muted = true;
+            break;
+
+        case SET_MUTE_OFF:
+            mic_is_muted = false;
+            break;
+    }
+}
+#endif
