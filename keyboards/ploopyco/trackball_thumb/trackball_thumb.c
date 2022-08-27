@@ -68,13 +68,15 @@ bool     is_drag_scroll    = false;
 __attribute__((weak)) bool encoder_update_user(uint8_t index, bool clockwise) { return true; }
 
 bool encoder_update_kb(uint8_t index, bool clockwise) {
+    xprintf("encoder_update_kb: ind: %u, clock: %u\n", index, clockwise);
+
     if (!encoder_update_user(index, clockwise)) {
         return false;
     }
 #ifdef MOUSEKEY_ENABLE
     tap_code(clockwise ? KC_WH_U : KC_WH_D);
 #else
-    mouse_report_t mouse_report = pointing_device_get_report();
+    report_mouse_t mouse_report = pointing_device_get_report();
     mouse_report.v = clockwise ? 1 : -1;
     pointing_device_set_report(mouse_report);
     pointing_device_send();
@@ -201,7 +203,7 @@ void keyboard_pre_init_kb(void) {
     // debug_enable  = true;
     // debug_matrix  = true;
     // debug_mouse   = true;
-    // debug_encoder = true;
+    debug_encoder = true;
 
     setPinInput(OPT_ENC1);
     setPinInput(OPT_ENC2);

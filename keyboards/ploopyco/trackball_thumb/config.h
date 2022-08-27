@@ -40,18 +40,16 @@
 /* disable action features */
 //#define NO_ACTION_LAYER
 //#define NO_ACTION_TAPPING
-//#define NO_ACTION_ONESHOT
-#define NO_ACTION_MACRO
-#define NO_ACTION_FUNCTION
+#define NO_ACTION_ONESHOT
 
 /* Much more so than a keyboard, speed matters for a mouse. So we'll go for as high
    a polling rate as possible. */
-#define USB_POLLING_INTERVAL_MS 1
+#define USB_POLLING_INTERVAL_MS 4
 #define USB_MAX_POWER_CONSUMPTION 100
 
 /* Bootmagic Lite key configuration */
 #define BOOTMAGIC_LITE_ROW 0
-#define BOOTMAGIC_LITE_COLUMN 0
+#define BOOTMAGIC_LITE_COLUMN 5
 
 #define ROTATIONAL_TRANSFORM_ANGLE 0
 #define POINTING_DEVICE_INVERT_Y
@@ -60,4 +58,4 @@
 // #define DEBUG_LED_PIN F7
 
 /* PMW3360 Settings */
-#define PMW3360_CS_PIN             B0
+#define PMW33XX_CS_PIN B0
