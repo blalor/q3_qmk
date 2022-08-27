@@ -1,4 +1,4 @@
-/* Copyright 2021 Colin Lam (Ploopy Corporation)
+/* Copyright Colin Lam (Ploopy Corporation)
  * Copyright 2020 Christopher Courtney, aka Drashna Jael're  (@drashna) <drashna@live.com>
  * Copyright 2019 Sunjun Kim
  *
@@ -15,12 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include QMK_KEYBOARD_H
 
-// safe range starts at `PLOOPY_SAFE_RANGE` instead.
+#pragma once
 
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT( /* Base */
-        KC_BTN4, DPI_CONFIG, KC_BTN1, KC_BTN3, KC_BTN2, KC_BTN5
-    ),
-};
+#include "trackball_thumb.h"

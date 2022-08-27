@@ -15,12 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include QMK_KEYBOARD_H
 
-// safe range starts at `PLOOPY_SAFE_RANGE` instead.
+#pragma once
 
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT( /* Base */
-        KC_BTN4, DPI_CONFIG, KC_BTN1, KC_BTN3, KC_BTN2, KC_BTN5
-    ),
-};
+/*
+ * Keyboard Matrix Assignments
+ */
+#define DIRECT_PINS            \
+    {                          \
+        { D5, B6, D4, D2, E6, D7 } \
+    }
+
+// These pins are not broken out, and cannot be used normally.
+// They are set as output and pulled high, by default
+#define UNUSED_PINS \
+    { D1, D3, B4, B7, D6, C7, F6, F5, F3, F7 }
+
+// If board has a debug LED, you can enable it by defining this
+#define RGB_DI_PIN B5
+#define RGBLED_NUM 3
+#define RGBLIGHT_LIMIT_VAL 40
+#define RGBLIGHT_EFFECT_BREATHING
+#define RGBLIGHT_EFFECT_RAINBOW_MOOD
+#define RGBLIGHT_EFFECT_RAINBOW_SWIRL

@@ -17,10 +17,14 @@
  */
 #include QMK_KEYBOARD_H
 
-// safe range starts at `PLOOPY_SAFE_RANGE` instead.
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT( /* Base */
-        KC_BTN4, DPI_CONFIG, KC_BTN1, KC_BTN3, KC_BTN2, KC_BTN5
-    ),
+    [0] = LAYOUT( KC_BTN4, DPI_CONFIG, KC_BTN1, KC_BTN3, KC_BTN2, KC_BTN5 ),
+    [1] = LAYOUT( _______, _______, _______, _______, _______, _______ ),
+    [2] = LAYOUT( _______, _______, _______, _______, _______, _______ ),
+    [3] = LAYOUT( _______, _______, _______, _______, _______, _______ ),
+    [4] = LAYOUT( _______, _______, _______, _______, _______, _______ ),
+    [5] = LAYOUT( _______, _______, _______, _______, _______, _______ ),
+    [6] = LAYOUT( _______, _______, _______, _______, _______, _______ ),
+    [7] = LAYOUT( _______, _______, _______, _______, _______, _______ )
 };

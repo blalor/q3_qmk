@@ -15,12 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include QMK_KEYBOARD_H
 
-// safe range starts at `PLOOPY_SAFE_RANGE` instead.
+#pragma once
 
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT( /* Base */
-        KC_BTN4, DPI_CONFIG, KC_BTN1, KC_BTN3, KC_BTN2, KC_BTN5
-    ),
-};
+#define DYNAMIC_KEYMAP_LAYER_COUNT 8
