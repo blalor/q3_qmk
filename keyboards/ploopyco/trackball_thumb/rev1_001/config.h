@@ -27,7 +27,10 @@
     }
 
 // These pins are not broken out, and cannot be used normally.
-// - D1, D3, B4, B7, D6, C7, F6, F5, F3, F7
+// They are set as output and pulled high, by default
+// Processed by trackball_thumb.c
+#define UNUSED_PINS \
+    { D1, D3, B4, B7, D6, C7, F6, F5, F3, F7 }
 
 // If board has a debug LED, you can enable it by defining this
 #define RGB_DI_PIN B5
