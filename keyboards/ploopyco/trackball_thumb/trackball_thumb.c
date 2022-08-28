@@ -68,11 +68,12 @@ bool     is_drag_scroll    = false;
 __attribute__((weak)) bool encoder_update_user(uint8_t index, bool clockwise) { return true; }
 
 bool encoder_update_kb(uint8_t index, bool clockwise) {
-    xprintf("encoder_update_kb: ind: %u, clock: %u\n", index, clockwise);
+    if (debug_encoder) dprintf("encoder_update_kb: ind: %u, clock: %u\n", index, clockwise);
 
     if (!encoder_update_user(index, clockwise)) {
         return false;
     }
+
 #ifdef MOUSEKEY_ENABLE
     tap_code(clockwise ? KC_WH_U : KC_WH_D);
 #else
@@ -81,6 +82,7 @@ bool encoder_update_kb(uint8_t index, bool clockwise) {
     pointing_device_set_report(mouse_report);
     pointing_device_send();
 #endif
+
     return true;
 }
 
@@ -129,12 +131,14 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
 
     if (is_drag_scroll) {
         mouse_report.h = mouse_report.x;
+
 #ifdef PLOOPY_DRAGSCROLL_INVERT
         // Invert vertical scroll direction
         mouse_report.v = -mouse_report.y;
 #else
         mouse_report.v = mouse_report.y;
 #endif
+
         mouse_report.x = 0;
         mouse_report.y = 0;
     }
@@ -143,9 +147,13 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
 }
 
 bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
-    if (true) {
-        xprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
-    }
+    dprintf(
+        "KL: kc: %u, col: %u, row: %u, pressed: %u\n",
+        keycode,
+        record->event.key.col,
+        record->event.key.row,
+        record->event.pressed
+    );
 
     // Update Timer to prevent accidental scrolls
     if ((record->event.key.col == 1) && (record->event.key.row == 0)) {
@@ -170,6 +178,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
         {
             is_drag_scroll ^= 1;
         }
+
 #ifdef PLOOPY_DRAGSCROLL_FIXED
         pointing_device_set_cpi(is_drag_scroll ? PLOOPY_DRAGSCROLL_DPI : dpi_array[keyboard_config.dpi_config]);
 #else
@@ -185,11 +194,13 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
 #ifndef MOUSEKEY_ENABLE
     if (IS_MOUSEKEY_BUTTON(keycode)) {
         report_mouse_t currentReport = pointing_device_get_report();
+
         if (record->event.pressed) {
             currentReport.buttons |= 1 << (keycode - KC_MS_BTN1);
         } else {
             currentReport.buttons &= ~(1 << (keycode - KC_MS_BTN1));
         }
+
         pointing_device_set_report(currentReport);
         pointing_device_send();
     }
@@ -200,11 +211,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
 
 // Hardware Setup
 void keyboard_pre_init_kb(void) {
-    // debug_enable  = true;
-    // debug_matrix  = true;
-    // debug_mouse   = true;
-    debug_encoder = true;
-
     setPinInput(OPT_ENC1);
     setPinInput(OPT_ENC2);
 
@@ -230,11 +236,18 @@ void keyboard_pre_init_kb(void) {
     keyboard_pre_init_user();
 }
 
+void keyboard_post_init_kb() {
+    // debug_enable  = true;
+    // debug_matrix  = true;
+    // debug_mouse   = true;
+    // debug_encoder = true;
+
+    keyboard_post_init_user();
+}
+
 void pointing_device_init_kb(void) {
     pointing_device_set_cpi(dpi_array[keyboard_config.dpi_config]);
 }
-
-
 
 void eeconfig_init_kb(void) {
     keyboard_config.dpi_config = PLOOPY_DPI_DEFAULT;
@@ -249,5 +262,6 @@ void matrix_init_kb(void) {
     if (keyboard_config.dpi_config > DPI_OPTION_SIZE) {
         eeconfig_init_kb();
     }
+
     matrix_init_user();
 }
