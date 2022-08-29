@@ -45,6 +45,12 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 1 |
 */
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT(KC_BTN4,       MO(1),      KC_BTN1,    KC_BTN3,    KC_BTN2,    KC_BTN5),
-    [1] = LAYOUT(DRAG_SCROLL,   _______,    _______,    _______,    _______,    DPI_CONFIG),
+    [0] = LAYOUT(
+        KC_BTN4, KC_BTN1,    KC_BTN3,    KC_BTN2,    KC_BTN5,
+        LT(1, DRAG_SCROLL)
+    ),
+    [1] = LAYOUT(
+        DPI_CONFIG,    _______,    _______,    _______,    _______,
+        _______
+    ),
 };

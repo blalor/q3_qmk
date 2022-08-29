@@ -34,8 +34,13 @@
 bool encoder_update_kb(uint8_t index, bool clockwise);
 bool encoder_update_user(uint8_t index, bool clockwise);
 
-#define LAYOUT(BFT, BF, BL, BM, BR, BB) \
-    { {BFT, BF, BL, BM, BR, BB}, }
+#define LAYOUT( \
+        BFT, BL, BM, BR, BB, \
+        BF \
+    ) \
+    { \
+        {BFT, BF, BL, BM, BR, BB}, \
+    }
 
 typedef union {
     uint32_t raw;
