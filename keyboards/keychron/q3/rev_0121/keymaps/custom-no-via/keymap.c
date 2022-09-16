@@ -37,8 +37,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 // clang-format off
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [MAC_BASE] = LAYOUT_all(
-                                                                                                                                        KC_VOLD, KC_VOLU,
+    [MAC_BASE] = LAYOUT_ansi_88(
         KC_ESC,   KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,   KC_F12,     KC_MPLY,        KC_NO,    TD(TD_CHIME_MUTE),  MO(WIN_BASE),
         KC_GRV,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,     KC_BSPC,        KC_INS,   KC_HOME,  KC_PGUP,
         KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,    KC_BSLS,        KC_DEL,   KC_END,   KC_PGDN,
@@ -46,8 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT,            KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,              KC_RSFT,                  KC_UP,
         KC_LCTL,  KC_LOPT,  KC_LCMD,                                KC_SPC,                                 KC_RCMD,  KC_ROPT,  MO(MAC_FN), KC_RCTL,        KC_LEFT,  KC_DOWN,  KC_RGHT),
 
-    [MAC_FN] = LAYOUT_all(
-                                                                                                                                        RGB_VAD, RGB_VAI,
+    [MAC_FN] = LAYOUT_ansi_88(
         KC_ESC,   KC_BRID,  KC_BRIU,  KC_MCTL,  KC_LPAD,  RGB_VAD,  RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,  KC_VOLU,    RGB_TOG,        _______,  _______,  RGB_MOD,
         _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,        _______,  _______,  _______,
         RGB_TOG,  RGB_MOD,  RGB_VAI,  RGB_HUI,  RGB_SAI,  RGB_SPI,  NK_TOGG,  _______,  _______,  _______,  _______,  _______,  _______,    _______,        _______,  _______,  _______,
@@ -55,8 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,            _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______,                  _______,
         _______,  _______,  _______,                                _______,                                _______,  _______,  _______,    _______,        _______,  _______,  _______),
 
-    [WIN_BASE] = LAYOUT_all(
-                                                                                                                                        XXXXXXX, XXXXXXX,
+    [WIN_BASE] = LAYOUT_ansi_88(
         XXXXXXX,  KC_F11,   KC_F12,   KC_F13,   KC_F14,   KC_F15,   KC_F16,   KC_F17, TD(TD_PW_1),TD(TD_PW_2),KC_F20, KC_F21,   KC_F22,     XXXXXXX,        XXXXXXX,  CH_BAIL,  XXXXXXX,
         XXXXXXX,  KVM_SW1,  KVM_SW2,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
@@ -65,8 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,  _______,  _______,                                XXXXXXX,                                 _______,  _______,  MO(WIN_FN), _______,       XXXXXXX,  XXXXXXX,  XXXXXXX),
 
     // bootmagic entry via escape isn't working, but QK_BOOT does
-    [WIN_FN] = LAYOUT_all(
-                                                                                                                                        XXXXXXX, XXXXXXX,
+    [WIN_FN] = LAYOUT_ansi_88(
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
@@ -77,55 +73,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // clang-format on
 
-#if defined(ENCODER_ENABLE)
-
-#define ENCODERS 1
-static uint8_t  encoder_state[ENCODERS] = {0};
-static keypos_t encoder_cw[ENCODERS]    = {{ 8, 5 }};
-static keypos_t encoder_ccw[ENCODERS]  = {{ 7, 5 }};
-
-void encoder_action_unregister(void) {
-    for (int index = 0; index < ENCODERS; ++index) {
-        if (encoder_state[index]) {
-            keyevent_t encoder_event = (keyevent_t) {
-                .key = encoder_state[index] >> 1 ? encoder_cw[index] : encoder_ccw[index],
-                .pressed = false,
-                .time = (timer_read() | 1)
-            };
-            encoder_state[index] = 0;
-            action_exec(encoder_event);
-        }
-    }
-}
-
-void encoder_action_register(uint8_t index, bool clockwise) {
-    keyevent_t encoder_event = (keyevent_t) {
-        .key = clockwise ? encoder_cw[index] : encoder_ccw[index],
-        .pressed = true,
-        .time = (timer_read() | 1)
-    };
-    encoder_state[index] = (clockwise ^ 1) | (clockwise << 1);
-    action_exec(encoder_event);
-}
-
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    encoder_action_register(index, clockwise);
-    return false;
+const uint16_t PROGMEM encoder_map[][1][2] = {
+    [MAC_BASE] = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
+    [MAC_FN]   = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI) },
+    [WIN_BASE] = {ENCODER_CCW_CW(XXXXXXX, XXXXXXX) },
+    [WIN_FN]   = {ENCODER_CCW_CW(XXXXXXX, XXXXXXX) }
 };
-
-#endif
-
-void matrix_scan_user(void) {
-#if defined(ENCODER_ENABLE)
-    encoder_action_unregister();
-#endif
-}
-
-// bool dip_switch_update_user(uint8_t index, bool active) {
-//     /* Send default layer state to host */
-//     system_switch_state_report(index, active);
-//     return true;
-// }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
