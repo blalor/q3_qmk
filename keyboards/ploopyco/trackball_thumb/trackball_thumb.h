@@ -34,14 +34,6 @@
 bool encoder_update_kb(uint8_t index, bool clockwise);
 bool encoder_update_user(uint8_t index, bool clockwise);
 
-#define LAYOUT( \
-        BFT, BL, BM, BR, BB, \
-        BF \
-    ) \
-    { \
-        {BFT, BF, BL, BM, BR, BB}, \
-    }
-
 typedef union {
     uint32_t raw;
     struct {
@@ -59,9 +51,7 @@ enum ploopy_keycodes {
 #else
     DPI_CONFIG = SAFE_RANGE,
 #endif
-
     DRAG_SCROLL,
-
 #ifdef VIA_ENABLE
     PLOOPY_SAFE_RANGE = SAFE_RANGE,
 #else
