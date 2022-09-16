@@ -10,40 +10,16 @@ enum layers{
 enum custom_keycodes {
     KC_MISSION_CONTROL = SAFE_RANGE,
     KC_LAUNCHPAD,
-    KC_LOPTN,
-    KC_ROPTN,
-    KC_LCMMD,
-    KC_RCMMD,
-    KC_TASK_VIEW,
-    KC_FILE_EXPLORER,
-    KC_SCREEN_SHOT,
-    KC_CORTANA
+    KVM_SW1,
+    KVM_SW2,
 };
 
 #define KC_MCTL KC_MISSION_CONTROL
 #define KC_LPAD KC_LAUNCHPAD
-#define KC_TASK KC_TASK_VIEW
-#define KC_FLXP KC_FILE_EXPLORER
-#define KC_SNAP KC_SCREEN_SHOT
-#define KC_CRTA KC_CORTANA
 
 #define CH_MUTE LCTL(LALT(LGUI(LSFT(KC_Y))))
 #define CH_VID  LCTL(LALT(LGUI(LSFT(KC_V))))
 #define CH_BAIL LCTL(LALT(LGUI(LSFT(KC_E))))
-
-typedef struct PACKED {
-    uint8_t len;
-    uint8_t keycode[3];
-} key_combination_t;
-
-key_combination_t key_comb_list[4] = {
-    {2, {KC_LWIN, KC_TAB}},
-    {2, {KC_LWIN, KC_E}},
-    {3, {KC_LSFT, KC_LCMD, KC_4}},
-    {2, {KC_LWIN, KC_C}}
-};
-
-static uint8_t mac_keycode[4] = { KC_LOPT, KC_ROPT, KC_LCMD, KC_RCMD };
 
 enum {
     TD_CHIME_MUTE,
@@ -68,7 +44,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,    KC_BSLS,        KC_DEL,   KC_END,   KC_PGDN,
         KC_ESC,   KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,              KC_ENT,
         KC_LSFT,            KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,              KC_RSFT,                  KC_UP,
-        KC_LCTL,  KC_LOPTN, KC_LCMMD,                               KC_SPC,                                 KC_RCMMD, KC_ROPTN, MO(MAC_FN), KC_RCTL,        KC_LEFT,  KC_DOWN,  KC_RGHT),
+        KC_LCTL,  KC_LOPT,  KC_LCMD,                                KC_SPC,                                 KC_RCMD,  KC_ROPT,  MO(MAC_FN), KC_RCTL,        KC_LEFT,  KC_DOWN,  KC_RGHT),
 
     [MAC_FN] = LAYOUT_all(
                                                                                                                                         RGB_VAD, RGB_VAI,
@@ -82,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [WIN_BASE] = LAYOUT_all(
                                                                                                                                         XXXXXXX, XXXXXXX,
         XXXXXXX,  KC_F11,   KC_F12,   KC_F13,   KC_F14,   KC_F15,   KC_F16,   KC_F17, TD(TD_PW_1),TD(TD_PW_2),KC_F20, KC_F21,   KC_F22,     XXXXXXX,        XXXXXXX,  CH_BAIL,  XXXXXXX,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  KVM_SW1,  KVM_SW2,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
         _______,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,              XXXXXXX,
         _______,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,              XXXXXXX,                  XXXXXXX,
@@ -169,35 +145,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;  // Skip all further processing of this key
 
-        case KC_LOPTN:
-        case KC_ROPTN:
-        case KC_LCMMD:
-        case KC_RCMMD:
+        case KVM_SW1:
             if (record->event.pressed) {
-                register_code(mac_keycode[keycode - KC_LOPTN]);
-            } else {
-                unregister_code(mac_keycode[keycode - KC_LOPTN]);
-            }
-            return false;  // Skip all further processing of this key
+                tap_code(KC_LCTL);
+                tap_code(KC_LCTL);
+                tap_code(KC_1);
 
-        case KC_TASK:
-        case KC_FLXP:
-        case KC_SNAP:
-        case KC_CRTA:
-            if (record->event.pressed) {
-                for (uint8_t i = 0; i < key_comb_list[keycode - KC_TASK].len; i++) {
-                    register_code(key_comb_list[keycode - KC_TASK].keycode[i]);
-                }
-            } else {
-                for (uint8_t i = 0; i < key_comb_list[keycode - KC_TASK].len; i++) {
-                    unregister_code(key_comb_list[keycode - KC_TASK].keycode[i]);
-                }
+                return false;
             }
-            return false;  // Skip all further processing of this key
+            break;
+
+        case KVM_SW2:
+            if (record->event.pressed) {
+                tap_code(KC_LCTL);
+                tap_code(KC_LCTL);
+                tap_code(KC_2);
+
+                return false;
+            }
+            break;
 
         default:
-            return true;  // Process all other keycodes normally
+            break;
     }
+
+    // Process all other keycodes normally
+    return true;
 }
 
 // https://docs.qmk.fm/#/feature_rgb_matrix?id=indicators
