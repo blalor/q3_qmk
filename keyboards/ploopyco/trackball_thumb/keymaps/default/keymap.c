@@ -19,61 +19,9 @@
 
 // safe range starts at `PLOOPY_SAFE_RANGE` instead.
 
-enum {
-    TD_B5,
-    TD_B6,
-};
-
-void handle_btn5(qk_tap_dance_state_t *state, void *user_data) {
-    if (state->count == 1) {
-        register_code(KC_BTN5);
-        reset_tap_dance(state);
-    } else if (state->count == 2) {
-        // … ?
-        reset_tap_dance(state);
-    }
-}
-
-qk_tap_dance_action_t tap_dance_actions[] = {
-    [TD_B5] = ACTION_TAP_DANCE_FN(handle_btn5),
-    // once for button 6, twice DPI change
-    [TD_B6] = ACTION_TAP_DANCE_DOUBLE(KC_BTN6, DPI_CONFIG),
-};
-
-/*
-0 | 2 | 3 | 4 | 5 |
-1 |
-*/
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT(
-        KC_BTN4, KC_BTN1,    KC_BTN3,    KC_BTN2,    KC_BTN5,
-        LT(1, DRAG_SCROLL)
-    ),
-    [1] = LAYOUT(
-        DPI_CONFIG,    _______,    _______,    _______,    _______,
-        _______
+    [0] = LAYOUT( /* Base */
+        KC_BTN4, KC_BTN1, KC_BTN3, KC_BTN2, KC_BTN5,
+        DPI_CONFIG
     ),
 };
-
-// bitmap of buttons pressed or not; all pressed == 0b111111 -> 0x3F
-uint8_t button_press_bitmap = 0;
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (record->event.key.row == 0) {
-        if (record->event.pressed) {
-            button_press_bitmap |= (1 << record->event.key.col);
-        } else {
-            button_press_bitmap &= ~(1 << record->event.key.col);
-        }
-
-        dprintf("button_press_bitmap: %u\n", button_press_bitmap);
-
-        if (button_press_bitmap == 0x3F) {
-            dprintln("jumping to bootloader");
-            reset_keyboard();
-            return false;
-        }
-    }
-
-    return true;
-}

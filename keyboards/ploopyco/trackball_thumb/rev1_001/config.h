@@ -18,7 +18,6 @@
 
 #pragma once
 
-
 // These pins are not broken out, and cannot be used normally.
 // They are set as output and pulled high, by default
 #define UNUSED_PINS \

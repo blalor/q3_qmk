@@ -52,7 +52,6 @@ uint16_t          dpi_array[] = PLOOPY_DPI_OPTIONS;
 
 // Trackball State
 bool     is_scroll_clicked = false;
-
 uint16_t last_scroll       = 0;  // Previous confirmed wheel event
 uint16_t last_mid_click    = 0;  // Stops scrollwheel from being read if it was pressed;
 bool     debug_encoder     = false;
@@ -141,8 +140,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
     if (keycode == DPI_CONFIG && record->event.pressed) {
         keyboard_config.dpi_config = (keyboard_config.dpi_config + 1) % DPI_OPTION_SIZE;
         eeconfig_update_kb(keyboard_config.raw);
-
-        dprintf("set DPI to %u\n", dpi_array[keyboard_config.dpi_config]);
         pointing_device_set_cpi(dpi_array[keyboard_config.dpi_config]);
     }
 
@@ -212,7 +209,6 @@ void keyboard_pre_init_kb(void) {
 
     keyboard_pre_init_user();
 }
-
 
 void pointing_device_init_kb(void) { pointing_device_set_cpi(dpi_array[keyboard_config.dpi_config]); }
 
