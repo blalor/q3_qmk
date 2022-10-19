@@ -15,6 +15,7 @@
  */
 
 #include "q3.h"
+#include "rgb_matrix.h"
 
 // clang-format off
 
@@ -36,7 +37,6 @@ bool dip_switch_update_kb(uint8_t index, bool active) {
         return false;
     }
     if (index == 0) {
-        layer_state_set(1UL << (active ? 2 : 0));
         default_layer_set(1UL << (active ? 2 : 0));
     }
     return true;
@@ -62,6 +62,10 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
                     } break;
                 }
             }
+            if (!rgb_matrix_is_enabled()) {
+                rgb_matrix_set_flags(LED_FLAG_ALL);
+                rgb_matrix_enable();
+            }
             return false;
 #endif
     }
@@ -80,4 +84,4 @@ __attribute__((weak)) void rgb_matrix_indicators_advanced_user(uint8_t led_min, 
     }
 }
 
-#endif
+#endif // CAPS_LOCK_LED_INDEX
