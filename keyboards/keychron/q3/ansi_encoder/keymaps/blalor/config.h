@@ -19,3 +19,8 @@
 #define RGB_DISABLE_TIMEOUT 1000*60*5 // 5m
 #define RGB_DISABLE_WHEN_USB_SUSPENDED
 #define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_TYPING_HEATMAP
+
+/*
+ * ⇧^QK_MAKE to type qmk flash … and enter bootloader
+ */
+#define ENABLE_COMPILE_KEYCODE
