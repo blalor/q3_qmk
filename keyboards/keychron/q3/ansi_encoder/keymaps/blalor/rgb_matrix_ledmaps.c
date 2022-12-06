@@ -49,7 +49,9 @@ void set_layer_rgb(uint8_t led_min, uint8_t led_max, int layer) {
             .b = (*l)[i][2],
         };
 
-        RGB_MATRIX_INDICATOR_SET_COLOR(i, rgb.r, rgb.g, rgb.b);
+        if (rgb.r || rgb.g || rgb.b ) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(i, rgb.r, rgb.g, rgb.b);
+        }
     }
 }
 
