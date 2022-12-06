@@ -41,7 +41,7 @@
         k76, k77, k78,                k79,                k80, k81, k82, k83, k84, k85  \
     }
 // clang-format on
-typedef uint8_t ledmap[DRIVER_LED_TOTAL][3];
+typedef uint8_t ledmap[RGB_MATRIX_LED_COUNT][3];
 extern const ledmap ledmaps[];
 
 void set_layer_rgb(uint8_t led_min, uint8_t led_max, int layer);
@@ -71,5 +71,5 @@ void rgb_matrix_layers_disable(void);
 
 #endif  // RGB_MATRIX_LEDMAPS_ENABLED
 
-void rgb_matrix_indicators_keymap(void);
-void rgb_matrix_indicators_advanced_keymap(uint8_t led_min, uint8_t led_max);
+bool rgb_matrix_indicators_keymap(void);
+bool rgb_matrix_indicators_advanced_keymap(uint8_t led_min, uint8_t led_max);
