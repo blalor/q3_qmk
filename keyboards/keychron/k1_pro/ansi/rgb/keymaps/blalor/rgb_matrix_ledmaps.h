@@ -47,6 +47,7 @@ extern const ledmap ledmaps[];
 void set_layer_rgb(uint8_t led_min, uint8_t led_max, int layer);
 
 // Just some handy defines to make our ledmaps look better
+# define ______ { RGB_OFF }
 # define AZURE  { RGB_AZURE }
 # define BLUE   { RGB_BLUE }
 # define CHARTR { RGB_CHARTREUSE }
@@ -65,6 +66,15 @@ void set_layer_rgb(uint8_t led_min, uint8_t led_max, int layer);
 # define TURQ   { RGB_TURQUOISE }
 # define WHITE  { RGB_WHITE }
 # define YELLOW { RGB_YELLOW }
+
+# define LYRIND { 0x11, 0x11, 0x11 }
+
+# define OFFBLU      {0x00, 0x80, 0xFF} // new color: blue with a hint of green
+// # define RGB_DKRED        {0x28, 0x00, 0x00} // new color: dark red
+# define ORANG2      {0xFF, 0x28, 0x00} // fix: reduced green from 80 to 28
+// # define RGB_PURPLE2      {0x80, 0x00, 0xFF} // fix: increased red from 7A to 80
+// # define RGB_SPRINGGREEN2 {0x00, 0xFF, 0x10} // fix: blue was 80, now 10
+// # define RGB_YELLOW2      {0xFF, 0xB0, 0x00} // fix: green was FF, now B0
 
 #endif  // RGB_MATRIX_LEDMAPS_ENABLED
 
