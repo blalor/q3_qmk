@@ -395,63 +395,65 @@ void ckbt51_radio_test(uint8_t channel) {
 }
 
 void ckbt51_dfu_tx(uint8_t rsp, uint8_t* data, uint8_t len, uint8_t sn) {
-    uint16_t checksum        = 0;
-    uint8_t  buf[RAW_EPSIZE] = {0};
-    uint8_t  i               = 0;
+    return;
+    // uint16_t checksum        = 0;
+    // uint8_t  buf[RAW_EPSIZE] = {0};
+    // uint8_t  i               = 0;
 
-    buf[i++] = 0x03;
-    buf[i++] = 0xAA;
-    buf[i++] = 0x57;
-    buf[i++] = len;
-    buf[i++] = ~len;
-    buf[i++] = sn;
-    buf[i++] = rsp;
-    memcpy(&buf[i], data, len);
-    i += len;
+    // buf[i++] = 0x03;
+    // buf[i++] = 0xAA;
+    // buf[i++] = 0x57;
+    // buf[i++] = len;
+    // buf[i++] = ~len;
+    // buf[i++] = sn;
+    // buf[i++] = rsp;
+    // memcpy(&buf[i], data, len);
+    // i += len;
 
-    for (uint8_t k = 0; k < i; k++)
-        checksum += buf[i];
+    // for (uint8_t k = 0; k < i; k++)
+    //     checksum += buf[i];
 
-    raw_hid_send(buf, RAW_EPSIZE);
+    // raw_hid_send(buf, RAW_EPSIZE);
 
-    if (len > 25) {
-        i = 0;
-        memset(buf, 0, RAW_EPSIZE);
-        buf[i++] = 0x03;
-        memcpy(&buf[i], data + 25, len - 25);
-        i = i + len - 25;
-        raw_hid_send(buf, RAW_EPSIZE);
-    }
+    // if (len > 25) {
+    //     i = 0;
+    //     memset(buf, 0, RAW_EPSIZE);
+    //     buf[i++] = 0x03;
+    //     memcpy(&buf[i], data + 25, len - 25);
+    //     i = i + len - 25;
+    //     raw_hid_send(buf, RAW_EPSIZE);
+    // }
 }
 
 void ckbt51_dfu_rx(uint8_t* data, uint8_t length) {
-    if (data[0] == 0xAA && (data[1] == 0x55 || data[1] == 0x56) && data[2] == (~data[3] & 0xFF)) {
-        uint16_t checksum    = 0;
-        uint8_t  payload_len = data[2];
+    return;
+    // if (data[0] == 0xAA && (data[1] == 0x55 || data[1] == 0x56) && data[2] == (~data[3] & 0xFF)) {
+    //     uint16_t checksum    = 0;
+    //     uint8_t  payload_len = data[2];
 
-        /* Check payload_len validity */
-        if (payload_len > RAW_EPSIZE - PACKECT_HEADER_LEN) return;
+    //     /* Check payload_len validity */
+    //     if (payload_len > RAW_EPSIZE - PACKECT_HEADER_LEN) return;
 
-        uint8_t* payload = &data[PACKECT_HEADER_LEN];
+    //     uint8_t* payload = &data[PACKECT_HEADER_LEN];
 
-        for (uint8_t i = 0; i < payload_len - 2; i++) {
-            checksum += payload[i];
-        }
+    //     for (uint8_t i = 0; i < payload_len - 2; i++) {
+    //         checksum += payload[i];
+    //     }
 
-        /* Verify checksum */
-        if ((checksum & 0xFF) != payload[payload_len - 2] || checksum >> 8 != payload[payload_len - 1]) return;
-        static uint8_t sn = 0;
+    //     /* Verify checksum */
+    //     if ((checksum & 0xFF) != payload[payload_len - 2] || checksum >> 8 != payload[payload_len - 1]) return;
+    //     static uint8_t sn = 0;
 
-        bool retry = true;
-        if (sn != data[4]) {
-            sn    = data[4];
-            retry = false;
-        }
+    //     bool retry = true;
+    //     if (sn != data[4]) {
+    //         sn    = data[4];
+    //         retry = false;
+    //     }
 
-        if ((payload[0] & 0xF0) == 0x60) {
-            ckbt51_send_cmd(payload, payload_len - 2, data[1] == 0x56, retry);
-        }
-    }
+    //     if ((payload[0] & 0xF0) == 0x60) {
+    //         ckbt51_send_cmd(payload, payload_len - 2, data[1] == 0x56, retry);
+    //     }
+    // }
 }
 
 __attribute__((weak)) void ckbt51_default_ack_handler(uint8_t* data, uint8_t len){};
