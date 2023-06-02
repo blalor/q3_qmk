@@ -20,16 +20,10 @@ __attribute__((weak)) bool rgb_matrix_indicators_advanced_keymap(uint8_t led_min
     return true;
 }
 
-#ifdef RGB_MATRIX_LEDMAPS_ENABLED
-
-static bool enabled = true;
-
-#endif  // RGB_MATRIX_LEDMAPS_ENABLED
-
 bool rgb_matrix_indicators_user(void) { return rgb_matrix_indicators_keymap(); }
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 #ifdef RGB_MATRIX_LEDMAPS_ENABLED
-    if (rgb_matrix_is_enabled() && enabled) {
+    if (rgb_matrix_is_enabled()) {
         set_layer_rgb(led_min, led_max, get_highest_layer(layer_state | default_layer_state));
     }
 
@@ -54,15 +48,4 @@ void set_layer_rgb(uint8_t led_min, uint8_t led_max, int layer) {
         }
     }
 }
-
-void rgb_matrix_layers_enable() {
-    dprintf("ledmaps are enabled\n");
-    enabled = true;
-}
-
-void rgb_matrix_layers_disable() {
-    dprintf("ledmaps are disabled\n");
-    enabled = false;
-}
-
 #endif  // RGB_MATRIX_LEDMAPS_ENABLED

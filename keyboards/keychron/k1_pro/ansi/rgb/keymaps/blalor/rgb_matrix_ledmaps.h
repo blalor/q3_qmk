@@ -46,9 +46,6 @@ extern const ledmap ledmaps[];
 
 void set_layer_rgb(uint8_t led_min, uint8_t led_max, int layer);
 
-void rgb_matrix_layers_enable(void);
-void rgb_matrix_layers_disable(void);
-
 // Just some handy defines to make our ledmaps look better
 # define AZURE  { RGB_AZURE }
 # define BLUE   { RGB_BLUE }
