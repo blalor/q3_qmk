@@ -1,6 +1,10 @@
 #include QMK_KEYBOARD_H
 #include "rgb_matrix_ledmaps.h"
 
+#ifdef KC_BLUETOOTH_ENABLE
+#    include "transport.h"
+#endif
+
 /*
     keycode references:
     * rgb - docs/feature_rgb_matrix.md
@@ -13,25 +17,20 @@ enum layers{
     _L3
 };
 
-enum custom_keycodes {
-    KVM_SW1 = SAFE_RANGE, // switch to KVM input #1
-    KVM_SW2,              // switch to KVM input #2
-};
-
 // captured by hammerspoon
 #define CH_MUTE LCTL(LALT(LGUI(LSFT(KC_Y))))
 #define CH_VID  LCTL(LALT(LGUI(LSFT(KC_V))))
 #define CH_BAIL LCTL(LALT(LGUI(LSFT(KC_E))))
 
 enum {
-    TD_CHIME_MUTE,
+    TD_VIDEO_MUTE,
     TD_PW_1,
     TD_PW_2,
 };
 
 tap_dance_action_t tap_dance_actions[] = {
-    // once for chime mute, twice for chime video toggle
-    [TD_CHIME_MUTE] = ACTION_TAP_DANCE_DOUBLE(CH_MUTE, CH_VID),
+    // once for video call mute, twice for video call camera toggle
+    [TD_VIDEO_MUTE] = ACTION_TAP_DANCE_DOUBLE(CH_MUTE, CH_VID),
     [TD_PW_1]       = ACTION_TAP_DANCE_DOUBLE(KC_F18, LSFT(KC_F18)), // password1 (hammerspoon)
     [TD_PW_2]       = ACTION_TAP_DANCE_DOUBLE(KC_F19, LSFT(KC_F19)), // password2 (hammerspoon)
 };
@@ -47,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         ^         ⌥         ⌘                                       Space                                   ⌘         ⌥         fn          ^               Left      Down      Rght
     */
     [BASE] = LAYOUT_tkl_ansi(
-        KC_ESC,             KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,     KC_F12,         KC_NO,    TD(TD_CHIME_MUTE),  MO(_L2),
+        KC_ESC,             KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,     KC_F12,         KC_NO,    TD(TD_VIDEO_MUTE),  MO(_L2),
         KC_GRV,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,     KC_BSPC,        KC_INS,   KC_HOME,  KC_PGUP,
         KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,    KC_BSLS,        KC_DEL,   KC_END,   KC_PGDN,
         KC_ESC,   KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,              KC_ENT,
@@ -64,7 +63,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_L2] = LAYOUT_tkl_ansi(
         XXXXXXX,            KC_F11,   KC_F12,   KC_F13,   KC_F14,   KC_F15,   KC_F16,   KC_F17, TD(TD_PW_1),TD(TD_PW_2),KC_F20, KC_F21,     KC_F22,         XXXXXXX,  CH_BAIL,  XXXXXXX,
-        XXXXXXX,  KVM_SW1,  KVM_SW2,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  BT_HST1,  BT_HST2,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
         _______,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,              XXXXXXX,
         _______,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,              XXXXXXX,                  XXXXXXX,
@@ -74,7 +73,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // BT_HSTn when held for 4s initiates pairing, otherwise switches hosts
     [_L3] = LAYOUT_tkl_ansi(
         XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
-        XXXXXXX,  BT_HST1,  BT_HST2,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    XXXXXXX,        XXXXXXX,  XXXXXXX,  XXXXXXX,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,              XXXXXXX,
         XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,              XXXXXXX,                  XXXXXXX,
@@ -121,7 +120,7 @@ const ledmap PROGMEM ledmaps[] = {
 
     [_L3]  = RGB_MATRIX_LAYOUT_LEDMAP(
         BLUE,               ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,                     ______,   ______,   ______,
-        ______,   ORANGE,   PURPLE,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,     ______,         ______,   ______,   ______,
+        ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,     ______,         ______,   ______,   ______,
         ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,     ______,         ______,   ______,   ______,
         ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,               ______,
         ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,               ______,                   ______,
@@ -133,23 +132,24 @@ const ledmap PROGMEM ledmaps[] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case KVM_SW1:
-            if (record->event.pressed) {
-                tap_code(KC_LCTL);
-                tap_code(KC_LCTL);
-                tap_code(KC_1);
 
-                return false;
+        // switch to BT host 1 or 2, or KVM input 1 or 2
+        case BT_HST1 ... BT_HST2:
+#ifdef KC_BLUETOOTH_ENABLE
+            if (get_transport() == TRANSPORT_BLUETOOTH) {
+                return true; // defer to the built-in handling for these keycodes
             }
-            break;
+            else
+#endif
+            // switch KVM input
+            {
+                if (record->event.pressed) {
+                    tap_code(KC_LCTL);
+                    tap_code(KC_LCTL);
+                    tap_code(KC_1 + (keycode - BT_HST1));
 
-        case KVM_SW2:
-            if (record->event.pressed) {
-                tap_code(KC_LCTL);
-                tap_code(KC_LCTL);
-                tap_code(KC_2);
-
-                return false;
+                    return false;
+                }
             }
             break;
 
