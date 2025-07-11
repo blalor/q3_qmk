@@ -16,69 +16,124 @@
 
 #include QMK_KEYBOARD_H
 #include "keychron_common.h"
+#include "transport.h"
 
 enum layers {
-    MAC_BASE,
-    MAC_FN,
-    WIN_BASE,
-    WIN_FN,
+    BASE,
+    _L1,
+    _L2, // active with dip switch
+    _L3,
 };
+
+enum custom_keycodes {
+    KVM_SW1 = SAFE_RANGE, // switch to KVM input #1
+    KVM_SW2,              // switch to KVM input #2
+};
+
+
+// captured by hammerspoon
+#define CM_MUTE LCTL(LALT(LGUI(LSFT(KC_Y))))
+#define CM_VID  LCTL(LALT(LGUI(LSFT(KC_V))))
+#define CM_BAIL LCTL(LALT(LGUI(LSFT(KC_E))))
+
+enum {
+    TD_CONF_MUTE,
+    TD_PW_1,
+    TD_PW_2,
+};
+
+tap_dance_action_t tap_dance_actions[] = {
+    // once for video conference audio mute, twice for video toggle
+    [TD_CONF_MUTE] = ACTION_TAP_DANCE_DOUBLE(CM_MUTE, CM_VID),
+    [TD_PW_1]      = ACTION_TAP_DANCE_DOUBLE(KC_F18, LSFT(KC_F18)), // password1 (hammerspoon)
+    [TD_PW_2]      = ACTION_TAP_DANCE_DOUBLE(KC_F19, LSFT(KC_F19)), // password2 (hammerspoon)
+};
+
+#define _CM TD(TD_CONF_MUTE)
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /*
-        Knob        Esc       F1        F2        F3        F4        F5         F6        F7        F8        F9        F10       F11       F12       Ins                 Del
+        rot btn     Esc       F1        F2        F3        F4        F5         F6        F7        F8        F9        F10       F11       F12       Ins                 Del
         M1          `         1         2         3         4         5          6         7         8         9         0         -         =         ⌫                   Pgup
         M2          →         Q         W         E         R         T          Y         U         I         O         P         [         ]         \                   Pgdn
         M3          Caps      A         S         D         F         G          H         J         K         L         ;         '                   ⏎                   Home
         M4          ⇧                   Z         X         C         V          B         B         N         M         ,         .         /         ⇧         Up
         M5          ^         ⌥                   ⌘         Space     fn                             Space               ⌘                             Left      Down      Rght
     */
-    [MAC_BASE] = LAYOUT_ansi_89(
-        KC_MUTE,    KC_ESC,   KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,     KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_INS,             KC_DEL,
-        MC_1,       KC_GRV,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,      KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,            KC_PGUP,
+    [BASE] = LAYOUT_ansi_89(
+        KC_MPLY,    KC_ESC,   KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,     KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_INS,             KC_DEL,
+        _CM,        KC_GRV,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,      KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,            KC_PGUP,
         MC_2,       KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,      KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,  KC_BSLS,            KC_PGDN,
         MC_3,       KC_ESC ,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,      KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,            KC_ENT,             KC_HOME,
         MC_4,       KC_LSFT,            KC_Z,     KC_X,     KC_C,     KC_V,      KC_B,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,  KC_RSFT,  KC_UP,
-        MC_5,       KC_LCTL,  KC_LOPTN,           KC_LCMMD, KC_SPC,  MO(MAC_FN),                     KC_SPC,             KC_RCMMD,                     KC_LEFT,  KC_DOWN,  KC_RGHT),
+        MO(_L2),    KC_LCTL,  KC_LOPTN,           KC_LCMMD, KC_SPC,   MO(_L1),                       KC_SPC,             KC_RCMMD,                     KC_LEFT,  KC_DOWN,  KC_RGHT),
 
-    [MAC_FN] = LAYOUT_ansi_89(
+    [_L1] = LAYOUT_ansi_89(
         RGB_TOG,    _______,  KC_BRID,  KC_BRIU,  KC_MCTRL, KC_LNPAD, RGB_VAD,   RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,            _______,
-        _______,    _______,  BT_HST1,  BT_HST2,  BT_HST3,  P2P4G,    _______,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
+        _______,    _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
         _______,    RGB_TOG,  RGB_MOD,  RGB_VAI,  RGB_HUI,  RGB_SAI,  RGB_SPI,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
         _______,    _______,  RGB_RMOD, RGB_VAD,  RGB_HUD,  RGB_SAD,  RGB_SPD,   _______,  _______,  _______,  _______,  _______,  _______,            _______,            KC_END,
         _______,    _______,            _______,  _______,  _______,  _______,   BAT_LVL,  BAT_LVL,  NK_TOGG,  _______,  _______,  _______,  _______,  _______,  _______,
         _______,    _______,  _______,            _______,  _______,  _______,                       _______,            _______,                      _______,  _______,  _______),
 
-    [WIN_BASE] = LAYOUT_ansi_89(
-        KC_MUTE,    KC_ESC,   KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,     KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_INS,             KC_DEL,
-        MC_1,       KC_GRV,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,      KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,            KC_PGUP,
-        MC_2,       KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,      KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,  KC_BSLS,            KC_PGDN,
-        MC_3,       KC_CAPS,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,      KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,            KC_ENT,             KC_HOME,
-        MC_4,       KC_LSFT,            KC_Z,     KC_X,     KC_C,     KC_V,      KC_B,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,  KC_RSFT,  KC_UP,
-        MC_5,       KC_LCTL,  KC_LWIN,            KC_LALT,  KC_SPC,  MO(WIN_FN),                     KC_SPC,             KC_RALT,                      KC_LEFT,  KC_DOWN,  KC_RGHT),
+    [_L2] = LAYOUT_ansi_89(
+        XXXXXXX,    XXXXXXX,  KC_F11,   KC_F12,   KC_F13,   KC_F14,   KC_F15,    KC_F16,   KC_F17,TD(TD_PW_1),TD(TD_PW_2),KC_F20,  KC_F21,   KC_F22,   XXXXXXX,            XXXXXXX,
+        CM_BAIL,    XXXXXXX,  BT_HST1,  BT_HST2,  BT_HST3,  P2P4G,    XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,            XXXXXXX,
+        XXXXXXX,    XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  MO(_L3),                       XXXXXXX,            XXXXXXX,                      XXXXXXX,  XXXXXXX,  XXXXXXX),
 
-    [WIN_FN] = LAYOUT_ansi_89(
-        RGB_TOG,    _______,  KC_BRID,  KC_BRIU,  KC_TASK,  KC_FILE,  RGB_VAD,   RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,   KC_VOLU,  _______,            _______,
-        _______,    _______,  BT_HST1,  BT_HST2,  BT_HST3,  P2P4G,    _______,   _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,            _______,
-        _______,    RGB_TOG,  RGB_MOD,  RGB_VAI,  RGB_HUI,  RGB_SAI,  RGB_SPI,   _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,            _______,
-        _______,    _______,  RGB_RMOD, RGB_VAD,  RGB_HUD,  RGB_SAD,  RGB_SPD,   _______,  _______,  _______,  _______,  _______,  _______,             _______,            KC_END,
-        _______,    _______,            _______,  _______,  _______,  _______,   BAT_LVL,  BAT_LVL,  NK_TOGG,  _______,  _______,  _______,   _______,  _______,  _______,
-        _______,    _______,  _______,            _______,  _______,  _______,                       _______,            _______,                       _______,  _______,  _______),
+    // alternative to bootmagic entry via escape with QK_BOOT
+    [_L3] = LAYOUT_ansi_89(
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,            XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,            XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,            XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,             XXXXXXX,            XXXXXXX,
+        XXXXXXX,    XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,                       XXXXXXX,            XXXXXXX,                       QK_MAKE,  XXXXXXX,  QK_BOOT),
 };
 
 #if defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
-    [MAC_BASE] = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
-    [MAC_FN] = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
-    [WIN_BASE] = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
-    [WIN_FN] = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI)}
+    [BASE] = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
+    [_L1]  = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
+    [_L2]  = {ENCODER_CCW_CW(XXXXXXX, XXXXXXX)},
+    [_L3]  = {ENCODER_CCW_CW(XXXXXXX, XXXXXXX)}
 };
 #endif // ENCODER_MAP_ENABLE
 
 // clang-format on
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        // switch to wireless host 1 or 2, or KVM input 1 or 2
+        case BT_HST1 ... BT_HST3:
+            if (get_transport() != TRANSPORT_BLUETOOTH) {
+                // switch KVM input
+                if (record->event.pressed) {
+                    tap_code(KC_LCTL);
+                    tap_code(KC_LCTL);
+                    tap_code(KC_1 + (keycode - BT_HST1));
+
+                    return false;
+                }
+            }
+            else {
+                // defer to the built-in handling for these keycodes
+                return process_record_keychron_common(keycode, record);
+            }
+
+            break;
+
+        default:
+            break;
+    }
+
     if (!process_record_keychron_common(keycode, record)) {
         return false;
     }
+
+    // Process all other keycodes normally
     return true;
 }
