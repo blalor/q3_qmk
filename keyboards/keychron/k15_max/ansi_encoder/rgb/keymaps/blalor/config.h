@@ -27,3 +27,18 @@
  * ⇧^QK_MAKE to type qmk flash … and enter bootloader
  */
 #define ENABLE_COMPILE_KEYCODE
+
+/* For smoother cursor movements, lower the value of MOUSEKEY_INTERVAL. If the
+   refresh rate of your display is 60Hz, you could set it to 16 (1/60). As this
+   raises the cursor speed significantly, you may want to lower
+   MOUSEKEY_MAX_SPEED. */
+// #define MOUSEKEY_INTERVAL 16
+// #define MOUSEKEY_MAX_SPEED
+
+#define MK_KINETIC_SPEED
+#define MOUSEKEY_INITIAL_SPEED 200
+
+#define MOUSEKEY_MOVE_DELTA 32 // default is 16
+
+#define MOUSEKEY_WHEEL_INITIAL_MOVEMENTS 8 // default is 16
+#define MOUSEKEY_WHEEL_BASE_MOVEMENTS 24 // default is 32

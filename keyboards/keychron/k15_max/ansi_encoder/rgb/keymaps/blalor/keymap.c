@@ -24,13 +24,61 @@ enum layers {
     _L1,
     _L2, // active with dip switch, which I've NEVER used
     _L3,
+    _MK, // mouse keys
+    _MS, // mouse scroll
 };
 
 enum custom_keycodes {
     KVM_SW1 = SAFE_RANGE, // switch to KVM input #1
     KVM_SW2,              // switch to KVM input #2
+
+    // Diagonal mouse movements
+    MO_NE,
+    MO_NW,
+    MO_SE,
+    MO_SW,
+    MO_S_NE,
+    MO_S_NW,
+    MO_S_SE,
+    MO_S_SW,
 };
 
+// Rename mouse keys with 7 letters
+#ifdef MOUSEKEY_ENABLE
+#define MO_S_N  KC_MS_WH_UP
+#define MO_S_S  KC_MS_WH_DOWN
+#define MO_S_E  KC_MS_WH_RIGHT
+#define MO_S_W  KC_MS_WH_LEFT
+#define MO_N    KC_MS_UP
+#define MO_S    KC_MS_DOWN
+#define MO_E    KC_MS_RIGHT
+#define MO_W    KC_MS_LEFT
+#define MO_CL_L KC_MS_BTN1
+#define MO_CL_R KC_MS_BTN2
+#define MO_CL_M KC_MS_BTN3
+#define MO_CL_4 KC_MS_BTN4
+#define MO_CL_5 KC_MS_BTN5
+#define MO_AC_0 MS_ACL0
+#define MO_AC_1 MS_ACL1
+#define MO_AC_2 MS_ACL2
+#else
+#define MO_S_N  KC_NO
+#define MO_S_S  KC_NO
+#define MO_S_E  KC_NO
+#define MO_S_W  KC_NO
+#define MO_N    KC_NO
+#define MO_S    KC_NO
+#define MO_E    KC_NO
+#define MO_W    KC_NO
+#define MO_CL_L KC_NO
+#define MO_CL_R KC_NO
+#define MO_CL_M KC_NO
+#define MO_CL_1 KC_NO
+#define MO_CL_2 KC_NO
+#define MO_AC_0 KC_NO
+#define MO_AC_1 KC_NO
+#define MO_AC_2 KC_NO
+#endif
 
 // captured by hammerspoon
 #define CM_MUTE LCTL(LALT(LGUI(LSFT(KC_Y))))
@@ -67,7 +115,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _CM,        KC_GRV,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,               KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS,  KC_EQL,   KC_BSPC,                      KC_PGUP,
         MC_2,       KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,                         KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,  KC_BSLS,            KC_PGDN,
         MC_3,       KC_ESC ,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,                         KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,  KC_ENT,                       KC_END,
-        MC_4,       KC_LSFT,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,               KC_NO,    KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,            KC_RSFT,            KC_UP,
+        MC_4,       KC_LSFT,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,               MO(_MK),  KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,            KC_RSFT,            KC_UP,
         MO(_L2),    KC_LCTL,  KC_LOPTN, KC_LCMMD, KC_SPC,             MO(_L1),                      KC_SPC,             KC_RCMMD, KC_RCTL,                                KC_LEFT,  KC_DOWN,  KC_RGHT),
 
     [_L1] = LAYOUT_ansi_90(
@@ -94,6 +142,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                      XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                      XXXXXXX,
         XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,            XXXXXXX,
         XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,                      XXXXXXX,            XXXXXXX,  XXXXXXX,                                QK_MAKE,  XXXXXXX,  QK_BOOT),
+
+    /*
+        rot btn     Esc       F1        F2        F3        F4        F5        F6   ||                       F7        F8        F9        F10       F11       F12       Del                 Home
+        M1          `         1         2         3         4         5         6    ||             7         8         9         0         -         =         ⌫                             Pgup
+        M2          →         Q         W         E         R         T              ||             Y         U         I_^       O         P         [         ]         \                   Pgdn
+        M3          Caps      A         S         D         F         G              ||             H         J_<       K         L_>       ;         '         ⏎                             End
+        M4          ⇧         Z         X         C         V         B              ||   B         N         M         ,_v       .         /                   ⇧                   Up
+        M5          ^         ⌥         ⌘         Space               fn             ||             Space               ⌘         ^                                       Left      Down      Rght
+    */
+    // mouse keys
+    [_MK] = LAYOUT_ansi_90(
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                      XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                      XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                      XXXXXXX,  MO_NW,    MO_N,     MO_NE,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  MO_AC_0,  MO_AC_1,  MO_AC_2,                      XXXXXXX,  MO_W,     MO_CL_M,  MO_E,     XXXXXXX,  XXXXXXX,  XXXXXXX,                      XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  MO_SW,    MO_S,     MO_SE,    XXXXXXX,            XXXXXXX,            XXXXXXX,
+        XXXXXXX,    KC_LCTL,  KC_LOPTN, KC_LCMMD, XXXXXXX,            MO(_MS),                      MO_CL_L,            MO_CL_R,  XXXXXXX,                                XXXXXXX,  XXXXXXX,  XXXXXXX),
+
+    // mouse scroll
+    [_MS] = LAYOUT_ansi_90(
+        _______,    _______,  _______,  _______,  _______,  _______,  _______,  _______,                      _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
+        _______,    _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,  _______,  _______,  _______,  _______,  _______,  _______,                      _______,
+        _______,    _______,  _______,  _______,  _______,  _______,  _______,                      _______,  XXXXXXX,  MO_S_N,   XXXXXXX,  _______,  _______,  _______,  _______,            _______,
+        _______,    _______,  _______,  _______,  _______,  _______,  _______,                      _______,  MO_S_W,   MO_CL_M,  MO_S_E,   _______,  _______,  _______,                      _______,
+        _______,    _______,  _______,  _______,  _______,  _______,  _______,            _______,  _______,  XXXXXXX,  MO_S_S,   XXXXXXX,  _______,            _______,            _______,
+        _______,    _______,  _______,  _______,  _______,            _______,                      MO_CL_L,            MO_CL_R,  _______,                                _______,  _______,  _______),
 };
 
 #ifdef RGB_MATRIX_LEDMAPS_ENABLED
@@ -107,6 +181,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #define RGB_PURPLE2 0x80, 0x00, 0xFF      // fix: increased red from 7A to 80
 #define RGB_SPRINGGREEN2 0x00, 0xFF, 0x10 // fix: blue was 80, now 10
 #define RGB_YELLOW2 0xFF, 0xB0, 0x00      // fix: green was FF, now B0
+
+//      ______
+#define _RED__ {RGB_RED}
+#define _ORG__ {RGB_ORANGE}
+#define _YELOW {RGB_YELLOW}
+#define _GREEN {RGB_GREEN}
+#define _BLUE_ {RGB_BLUE}
+#define _PURPL {RGB_PURPLE}
+#define _WHITE {RGB_WHITE}
+#define _OFF__ {RGB_OFF}
 
 const ledmap PROGMEM ledmaps[] = {
     /*
@@ -122,7 +206,7 @@ const ledmap PROGMEM ledmaps[] = {
         ORANG2,     ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,                       ______,
         ______,     ______,   ______,   ______,   ______,   ______,   ______,                       ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
         ______,     ______,   ______,   ______,   ______,   ______,   ______,                       ______,   ______,   ______,   ______,   ______,   ______,   ______,                       ______,
-        ______,     ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,             ______,             ______,
+        ______,     ______,   ______,   ______,   ______,   ______,   ______,             LYRIND,   ______,   ______,   ______,   ______,   ______,             ______,             ______,
         LYRIND,     ______,   ______,   ______,   ______,             LYRIND,                       ______,             ______,   ______,                                 ______,   ______,   ______
     ),
 
@@ -152,6 +236,24 @@ const ledmap PROGMEM ledmaps[] = {
         ______,     ______,   ______,   ______,   ______,   ______,   ______,              ______,  ______,   ______,   ______,   ______,   ______,             ______,              ______,
         ______,     ______,   ______,   ______,   ______,             ______,                       ______,             ______,   ______,                                 GREEN,     ______,  RED
     ),
+
+    [_MK]  = RGB_MATRIX_LAYOUT_LEDMAP(
+                    ______,   ______,   ______,   ______,   ______,   ______,   ______,                       _RED__,   _RED__,   _RED__,   ______,   ______,   ______,   ______,             ______,
+        ______,     ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,                       ______,
+        ______,     ______,   ______,   ______,   ______,   ______,   ______,                       ______,   _GREEN,   _GREEN,   _GREEN,   ______,   ______,   ______,   ______,             ______,
+        ______,     ______,   ______,   ______,   ______,   ______,   ______,                       ______,   _GREEN,   PURPLE,   _GREEN,   ______,   ______,   ______,                       ______,
+        ______,     ______,   ______,   ______,   ______,   ______,   ______,              ______,  ______,   _GREEN,   _GREEN,   _GREEN,   ______,             ______,              ______,
+        ______,     ______,   ______,   ______,   ______,             ______,                       PURPLE,             PURPLE,   ______,                                 ______,    ______,  ______
+    ),
+
+    [_MS]  = RGB_MATRIX_LAYOUT_LEDMAP(
+                    ______,   ______,   ______,   ______,   ______,   ______,   ______,                       _RED__,   _RED__,   _RED__,   ______,   ______,   ______,   ______,             ______,
+        ______,     ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,                       ______,
+        ______,     ______,   ______,   ______,   ______,   ______,   ______,                       ______,   _ORG__,   _ORG__,   _ORG__,   ______,   ______,   ______,   ______,             ______,
+        ______,     ______,   ______,   ______,   ______,   ______,   ______,                       ______,   _ORG__,   PURPLE,   _ORG__,   ______,   ______,   ______,                       ______,
+        ______,     ______,   ______,   ______,   ______,   ______,   ______,              ______,  ______,   _ORG__,   _ORG__,   _ORG__,   ______,             ______,              ______,
+        ______,     ______,   ______,   ______,   ______,             ______,                       PURPLE,             PURPLE,   ______,                                 ______,    ______,  ______
+    ),
 };
 #endif // RGB_MATRIX_LEDMAPS_ENABLED
 // clang-format on
@@ -161,7 +263,9 @@ const ledmap PROGMEM ledmaps[] = {
         [BASE] = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
         [_L1]  = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
         [_L2]  = {ENCODER_CCW_CW(XXXXXXX, XXXXXXX)},
-        [_L3]  = {ENCODER_CCW_CW(XXXXXXX, XXXXXXX)}
+        [_L3]  = {ENCODER_CCW_CW(XXXXXXX, XXXXXXX)},
+        [_MK]  = {ENCODER_CCW_CW(XXXXXXX, XXXXXXX)},
+        [_MS]  = {ENCODER_CCW_CW(XXXXXXX, XXXXXXX)},
     };
 #endif // ENCODER_MAP_ENABLE
 
@@ -186,6 +290,113 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
 
             break;
+
+//-------Diagonal mouse movements
+#ifdef MOUSEKEY_ENABLE
+        case MO_NE:
+            if( record->event.pressed ) {
+                mousekey_on(MO_N);
+                mousekey_on(MO_E);
+                mousekey_send();
+            } else {
+                mousekey_off(MO_N);
+                mousekey_off(MO_E);
+                mousekey_send();
+            }
+            return false;
+            break;
+
+        case MO_NW:
+            if( record->event.pressed ) {
+                mousekey_on(MO_N);
+                mousekey_on(MO_W);
+                mousekey_send();
+            } else {
+                mousekey_off(MO_N);
+                mousekey_off(MO_W);
+                mousekey_send();
+            }
+            return false;
+            break;
+
+        case MO_SE:
+            if( record->event.pressed ) {
+                mousekey_on(MO_S);
+                mousekey_on(MO_E);
+                mousekey_send();
+            } else {
+                mousekey_off(MO_S);
+                mousekey_off(MO_E);
+                mousekey_send();
+            }
+            return false;
+            break;
+
+        case MO_SW:
+            if( record->event.pressed ) {
+                mousekey_on(MO_S);
+                mousekey_on(MO_W);
+                mousekey_send();
+            } else {
+                mousekey_off(MO_S);
+                mousekey_off(MO_W);
+                mousekey_send();
+            }
+            return false;
+            break;
+
+        case MO_S_NE:
+            if( record->event.pressed ) {
+                mousekey_on(MO_S_N);
+                mousekey_on(MO_S_E);
+                mousekey_send();
+            } else {
+                mousekey_off(MO_S_N);
+                mousekey_off(MO_S_E);
+                mousekey_send();
+            }
+            return false;
+            break;
+
+        case MO_S_NW:
+            if( record->event.pressed ) {
+                mousekey_on(MO_S_N);
+                mousekey_on(MO_S_W);
+                mousekey_send();
+            } else {
+                mousekey_off(MO_S_N);
+                mousekey_off(MO_S_W);
+                mousekey_send();
+            }
+            return false;
+            break;
+
+        case MO_S_SE:
+            if( record->event.pressed ) {
+                mousekey_on(MO_S_S);
+                mousekey_on(MO_S_E);
+                mousekey_send();
+            } else {
+                mousekey_off(MO_S_S);
+                mousekey_off(MO_S_E);
+                mousekey_send();
+            }
+            return false;
+            break;
+
+        case MO_S_SW:
+            if( record->event.pressed ) {
+                mousekey_on(MO_S_S);
+                mousekey_on(MO_S_W);
+                mousekey_send();
+            } else {
+                mousekey_off(MO_S_S);
+                mousekey_off(MO_S_W);
+                mousekey_send();
+            }
+            return false;
+            break;
+#endif
 
         default:
             break;
