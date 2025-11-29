@@ -16,8 +16,6 @@
 
 #include QMK_KEYBOARD_H
 #include "rgb_matrix_ledmaps.h"
-#include "keychron_common.h"
-#include "transport.h"
 
 enum layers {
     BASE,
@@ -68,19 +66,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         MC_2,       KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,      KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC,  KC_RBRC,            KC_BSLS,            KC_PGDN,
         MC_3,       KC_ESC ,  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,      KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT,            KC_ENT,                       KC_END,
         MC_4,       KC_LSFT,            KC_Z,     KC_X,     KC_C,     KC_V,      KC_B,     KC_NO,    KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,  KC_RSFT,            KC_UP,
-        MO(_L2),    KC_LCTL,  KC_LOPTN,           KC_LCMMD, KC_SPC,   MO(_L1),                       KC_SPC,             KC_RCMMD,                               KC_LEFT,  KC_DOWN,  KC_RGHT),
+        MO(_L2),    KC_LCTL,  KC_LOPT,            KC_LCMD,  KC_SPC,   MO(_L1),                       KC_SPC,             KC_RCMD,                                KC_LEFT,  KC_DOWN,  KC_RGHT),
 
     [_L1] = LAYOUT_ansi_89(
-        RGB_TOG,    _______,  KC_BRID,  KC_BRIU,  KC_MCTRL, KC_LNPAD, RGB_VAD,   RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,                      _______,
+        RM_TOGG,    _______,  KC_BRID,  KC_BRIU,  KC_MCTL,  KC_LPAD,  RM_VALD,   RM_VALU,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,                      _______,
         _______,    _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_DEL,                       _______,
-        _______,    RGB_TOG,  RGB_MOD,  RGB_VAI,  RGB_HUI,  RGB_SAI,  RGB_SPI,   _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,            _______,
-        _______,    _______,  RGB_RMOD, RGB_VAD,  RGB_HUD,  RGB_SAD,  RGB_SPD,   _______,  _______,  _______,  _______,  _______,  _______,            _______,                      KC_END,
-        _______,    _______,            _______,  _______,  _______,  _______,   BAT_LVL,  BAT_LVL,  NK_TOGG,  _______,  _______,  _______,  _______,  _______,            _______,
+        _______,    RM_TOGG,  RM_NEXT,  RM_VALU,  RM_HUEU,  RM_SATU,  RM_SPDU,   _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,            _______,
+        _______,    _______,  RM_PREV,  RM_VALD,  RM_HUED,  RM_SATD,  RM_SPDD,   _______,  _______,  _______,  _______,  _______,  _______,            _______,                      KC_END,
+        _______,    _______,            _______,  _______,  _______,  _______,   _______,  _______,  NK_TOGG,  _______,  _______,  _______,  _______,  _______,            _______,
         _______,    _______,  _______,            _______,  _______,  _______,                       _______,            _______,                                _______,  _______,  _______),
 
     [_L2] = LAYOUT_ansi_89(
         XXXXXXX,    XXXXXXX,  KC_F11,   KC_F12,   KC_F13,   KC_F14,   KC_F15,    KC_F16,   KC_F17,TD(TD_PW_1),TD(TD_PW_2),KC_F20,  KC_F21,   KC_F22,   XXXXXXX,                      XXXXXXX,
-        CM_BAIL,    XXXXXXX,  BT_HST1,  BT_HST2,  BT_HST3,  P2P4G,    XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                      XXXXXXX,
+        CM_BAIL,    XXXXXXX,  KVM_SW1,  KVM_SW2,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                      XXXXXXX,
         XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,            XXXXXXX,
         XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,                      XXXXXXX,
         XXXXXXX,    XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,
@@ -170,31 +168,20 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
 // clang-format on
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        // switch to wireless host 1 or 2, or KVM input 1 or 2
-        case BT_HST1 ... BT_HST3:
-            if (get_transport() != TRANSPORT_BLUETOOTH) {
-                // switch KVM input
-                if (record->event.pressed) {
-                    tap_code(KC_LCTL);
-                    tap_code(KC_LCTL);
-                    tap_code(KC_1 + (keycode - BT_HST1));
+        // switch to KVM input 1 or 2
+        case KVM_SW1 ... KVM_SW2:
+            // switch KVM input
+            if (record->event.pressed) {
+                tap_code(KC_LCTL);
+                tap_code(KC_LCTL);
+                tap_code(KC_1 + (keycode - KVM_SW1));
 
-                    return false;
-                }
+                return false;
             }
-            else {
-                // defer to the built-in handling for these keycodes
-                return process_record_keychron_common(keycode, record);
-            }
-
             break;
 
         default:
             break;
-    }
-
-    if (!process_record_keychron_common(keycode, record)) {
-        return false;
     }
 
     // Process all other keycodes normally
