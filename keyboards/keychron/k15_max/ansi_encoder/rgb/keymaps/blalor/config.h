@@ -24,7 +24,7 @@
 #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_TYPING_HEATMAP
 
 /*
- * ⇧^QK_MAKE to type qmk flash … and enter bootloader
+ * ⇧^QK_MAKE to type qmk flash … and enter bootloader
  */
 #define ENABLE_COMPILE_KEYCODE
 
@@ -42,3 +42,13 @@
 
 #define MOUSEKEY_WHEEL_INITIAL_MOVEMENTS 8 // default is 16
 #define MOUSEKEY_WHEEL_BASE_MOVEMENTS 24 // default is 32
+
+// see also from https://www.reddit.com/r/ErgoMechKeyboards/comments/qx7oqg/comment/hl81zbp/
+/*
+// Mouse key speed and acceleration.
+#define MOUSEKEY_DELAY          0
+#define MOUSEKEY_INTERVAL       16
+#define MOUSEKEY_WHEEL_DELAY    0
+#define MOUSEKEY_MAX_SPEED      6
+#define MOUSEKEY_TIME_TO_MAX    64
+*/
