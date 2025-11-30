@@ -32,6 +32,14 @@ Check out the appropriate branch.
 
 Flash with `qmk flash -kb … -km blalor`
 
+## remotes
+
+`blalor` would be `origin` but given this is a mishmash of forks it's confusing.
+
+* `blalor` - blalor/q3_qmk
+* `keychron` - Keychron/qmk_firmware
+* `upstream`- qmk/qmk_firmware
+
 <!--
 # This is blalor's `customized` branch
 
