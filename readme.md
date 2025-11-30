@@ -4,7 +4,7 @@ As of 2025-11-30.  Note: this repo's name hasn't been accurate for years.
 
 ## branches
 
-### [`customized`](https://github.com/blalor/q3_qmk/tree/customized)
+### `customized`
 
 Should track qmk/qmk_firmware:master.
 
@@ -12,7 +12,7 @@ Should track qmk/qmk_firmware:master.
 * Keychron Q10
 * Ploopy Thumb
 
-### [`wls_2025q1_customized`](https://github.com/blalor/q3_qmk/tree/wls_2025q1_customized)
+### `wls_2025q1_customized`
 
 Branched from [Keychron/qmk_firmware:wls_2025q1](https://github.com/Keychron/qmk_firmware/commit/ed3f307267fa63acd12377f21117b4471d2df82e).
 
