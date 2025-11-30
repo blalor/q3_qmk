@@ -1,7 +1,7 @@
 {    "version": 1,
     "notes": "",
     "documentation": "\"This file is a QMK Configurator export. You can import this at <https://config.qmk.fm>. It can also be used directly with QMK's source code.\n\nTo setup your QMK environment check out the tutorial: <https://docs.qmk.fm/#/newbs>\n\nYou can convert this file to a keymap.c using this command: `qmk json2c {keymap}`\n\nYou can compile this keymap using this command: `qmk compile {keymap}`\"\n",
-    "keyboard": "hillside/48",
+    "keyboard": "hillside/48/0_1",
     "keymap": "default",
     "layout": "LAYOUT",
     "layers": [
@@ -74,10 +74,10 @@
          "KC_NO"     , "KC_F11"  , "KC_F12" , "KC_PSCR", "KC_NO"        , "KC_NO",
 
          "KC_NO"     , "KC_NO"   , "KC_NO"  , "KC_NO"  , "AG_NORM"      , "CG_NORM",
-         "RGB_MOD"   , "RGB_VAI" , "RGB_HUI", "RGB_SAI", "KC_NO"        , "KC_NO",
+         "UG_NEXT"   , "UG_VALU" , "UG_HUEU", "UG_SATU", "KC_NO"        , "KC_NO",
 
          "KC_NO"     , "KC_LGUI" , "KC_LALT", "KC_LCTL", "KC_LSFT"      , "KC_NO"     , "KC_NO",
-         "RGB_TOG"   , "RGB_RMOD", "RGB_VAD", "RGB_HUD", "RGB_SAD"      , "KC_NO"     , "QK_BOOT",
+         "UG_TOGG"   , "UG_PREV" , "UG_VALD", "UG_HUED", "UG_SATD"      , "KC_NO"     , "QK_BOOT",
 
          "KC_NO"     , "KC_NO"   , "KC_NO"  , "KC_TRNS", "KC_NO",
          "KC_TRNS"   , "KC_NO"   , "KC_NO"  , "KC_NO"  , "KC_NO"

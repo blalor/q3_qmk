@@ -5,10 +5,10 @@
 
 # Autodetect teensy loader
 ifndef TEENSY_LOADER_CLI
-	ifneq (, $(shell which teensy-loader-cli 2>/dev/null))
-		TEENSY_LOADER_CLI ?= teensy-loader-cli
-	else
+	ifneq (, $(shell which teensy_loader_cli 2>/dev/null))
 		TEENSY_LOADER_CLI ?= teensy_loader_cli
+	else
+		TEENSY_LOADER_CLI ?= teensy-loader-cli
 	endif
 endif
 
@@ -130,10 +130,10 @@ avrdude-split-right: $(BUILD_DIR)/$(TARGET).hex check-size cpfirmware
 	$(call EXEC_AVRDUDE,eeprom-righthand.eep)
 
 define EXEC_USBASP
-	if $(AVRDUDE_PROGRAMMER) -p $(AVRDUDE_MCU) -c usbasp 2>&1 | grep -q "could not find USB device with"; then \
+	if $(AVRDUDE_PROGRAMMER) -p $(AVRDUDE_MCU) -c usbasp 2>&1 | grep -q "\(could not\|cannot\) find USB device with"; then \
 		printf "$(MSG_BOOTLOADER_NOT_FOUND_QUICK_RETRY)" ;\
 		sleep $(BOOTLOADER_RETRY_TIME) ;\
-		until $(AVRDUDE_PROGRAMMER) -p $(AVRDUDE_MCU) -c usbasp 2>&1 | (! grep -q "could not find USB device with"); do\
+		until $(AVRDUDE_PROGRAMMER) -p $(AVRDUDE_MCU) -c usbasp 2>&1 | (! grep -q "\(could not\|cannot\) find USB device with"); do\
 			printf "." ;\
 			sleep $(BOOTLOADER_RETRY_TIME) ;\
 		done ;\

@@ -95,25 +95,15 @@ void matrix_init_user(void) {
   // Call the keymap level matrix init.
 
   // Set our LED pins as output
-  setPinOutput(C4);
-  setPinOutput(C5);
-  setPinOutput(C6);
+  gpio_set_pin_output(C4);
+  gpio_set_pin_output(C5);
+  gpio_set_pin_output(C6);
 }
 
-void led_set_kb(uint8_t usb_led) {
-    if (IS_LED_OFF(usb_led, USB_LED_NUM_LOCK)) {
-        writePinLow(C4);
-    } else {
-        writePinHigh(C4);
-    }
-    if (IS_LED_OFF(usb_led, USB_LED_CAPS_LOCK)) {
-        writePinLow(C5);
-    } else {
-        writePinHigh(C5);
-    }
-    if (IS_LED_OFF(usb_led, USB_LED_SCROLL_LOCK)) {
-        writePinLow(C6);
-    } else {
-        writePinHigh(C6);
-    }
+bool led_update_user(led_t led_state) {
+    gpio_write_pin(C4, led_state.num_lock);
+    gpio_write_pin(C5, led_state.caps_lock);
+    gpio_write_pin(C6, led_state.scroll_lock);
+
+    return false;
 }

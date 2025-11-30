@@ -3,6 +3,8 @@
 We list each subcommand here explicitly because all the reliable ways of searching for modules are slow and delay startup.
 """
 import os
+import platform
+import platformdirs
 import shlex
 import sys
 from importlib.util import find_spec
@@ -11,6 +13,28 @@ from subprocess import run
 
 from milc import cli, __VERSION__
 from milc.questions import yesno
+
+
+def _get_default_distrib_path():
+    if 'windows' in platform.platform().lower():
+        try:
+            result = cli.run(['cygpath', '-w', '/opt/qmk'])
+            if result.returncode == 0:
+                return result.stdout.strip()
+        except Exception:
+            pass
+
+    return platformdirs.user_data_dir('qmk')
+
+
+# Ensure the QMK distribution is on the `$PATH` if present. This must be kept in sync with qmk/qmk_cli.
+QMK_DISTRIB_DIR = Path(os.environ.get('QMK_DISTRIB_DIR', _get_default_distrib_path()))
+if QMK_DISTRIB_DIR.exists():
+    os.environ['PATH'] = str(QMK_DISTRIB_DIR / 'bin') + os.pathsep + os.environ['PATH']
+
+# Prepend any user-defined path prefix
+if 'QMK_PATH_PREFIX' in os.environ:
+    os.environ['PATH'] = os.environ['QMK_PATH_PREFIX'] + os.pathsep + os.environ['PATH']
 
 import_names = {
     # A mapping of package name to importable name
@@ -31,16 +55,16 @@ safe_commands = [
 ]
 
 subcommands = [
+    'qmk.cli.ci.validate_aliases',
     'qmk.cli.bux',
     'qmk.cli.c2json',
     'qmk.cli.cd',
-    'qmk.cli.cformat',
     'qmk.cli.chibios.confmigrate',
     'qmk.cli.clean',
     'qmk.cli.compile',
     'qmk.cli.docs',
     'qmk.cli.doctor',
-    'qmk.cli.fileformat',
+    'qmk.cli.find',
     'qmk.cli.flash',
     'qmk.cli.format.c',
     'qmk.cli.format.json',
@@ -49,6 +73,7 @@ subcommands = [
     'qmk.cli.generate.api',
     'qmk.cli.generate.autocorrect_data',
     'qmk.cli.generate.compilation_database',
+    'qmk.cli.generate.community_modules',
     'qmk.cli.generate.config_h',
     'qmk.cli.generate.develop_pr_list',
     'qmk.cli.generate.dfu_header',
@@ -57,26 +82,38 @@ subcommands = [
     'qmk.cli.generate.keyboard_c',
     'qmk.cli.generate.keyboard_h',
     'qmk.cli.generate.keycodes',
+    'qmk.cli.generate.keymap_h',
+    'qmk.cli.generate.make_dependencies',
     'qmk.cli.generate.rgb_breathe_table',
     'qmk.cli.generate.rules_mk',
     'qmk.cli.generate.version_h',
+    'qmk.cli.git.submodule',
     'qmk.cli.hello',
     'qmk.cli.import.kbfirmware',
     'qmk.cli.import.keyboard',
     'qmk.cli.import.keymap',
     'qmk.cli.info',
     'qmk.cli.json2c',
+    'qmk.cli.license_check',
     'qmk.cli.lint',
+    'qmk.cli.kle2json',
     'qmk.cli.list.keyboards',
     'qmk.cli.list.keymaps',
     'qmk.cli.list.layouts',
-    'qmk.cli.kle2json',
-    'qmk.cli.multibuild',
+    'qmk.cli.mass_compile',
+    'qmk.cli.migrate',
     'qmk.cli.new.keyboard',
     'qmk.cli.new.keymap',
     'qmk.cli.painter',
-    'qmk.cli.pyformat',
     'qmk.cli.pytest',
+    'qmk.cli.resolve_alias',
+    'qmk.cli.test.c',
+    'qmk.cli.userspace.add',
+    'qmk.cli.userspace.compile',
+    'qmk.cli.userspace.doctor',
+    'qmk.cli.userspace.list',
+    'qmk.cli.userspace.path',
+    'qmk.cli.userspace.remove',
     'qmk.cli.via2json',
 ]
 
@@ -178,28 +215,30 @@ def _eprint(errmsg):
 # Supported version information
 #
 # Based on the OSes we support these are the minimum python version available by default.
-# Last update: 2021 Jan 02
+# Last update: 2024 Jun 24
 #
-# Arch: 3.9
-# Debian: 3.7
-# Fedora 31: 3.7
-# Fedora 32: 3.8
-# Fedora 33: 3.9
-# FreeBSD: 3.7
-# Gentoo: 3.7
-# macOS: 3.9 (from homebrew)
-# msys2: 3.8
-# Slackware: 3.7
-# solus: 3.7
-# void: 3.9
+# Arch: 3.12
+# Debian 11: 3.9
+# Debian 12: 3.11
+# Fedora 39: 3.12
+# Fedora 40: 3.12
+# FreeBSD: 3.11
+# Gentoo: 3.12
+# macOS: 3.12 (from homebrew)
+# msys2: 3.11
+# Slackware: 3.9
+# solus: 3.10
+# Ubuntu 22.04: 3.10
+# Ubuntu 24.04: 3.12
+# void: 3.12
 
-if sys.version_info[0] != 3 or sys.version_info[1] < 7:
-    _eprint('Error: Your Python is too old! Please upgrade to Python 3.7 or later.')
+if sys.version_info[0] != 3 or sys.version_info[1] < 9:
+    _eprint('Error: Your Python is too old! Please upgrade to Python 3.9 or later.')
     exit(127)
 
 milc_version = __VERSION__.split('.')
 
-if int(milc_version[0]) < 2 and int(milc_version[1]) < 4:
+if int(milc_version[0]) < 2 and int(milc_version[1]) < 9:
     requirements = Path('requirements.txt').resolve()
 
     _eprint(f'Your MILC library is too old! Please upgrade: python3 -m pip install -U -r {str(requirements)}')
@@ -208,8 +247,8 @@ if int(milc_version[0]) < 2 and int(milc_version[1]) < 4:
 # Make sure we can run binaries in the same directory as our Python interpreter
 python_dir = os.path.dirname(sys.executable)
 
-if python_dir not in os.environ['PATH'].split(':'):
-    os.environ['PATH'] = ":".join((python_dir, os.environ['PATH']))
+if python_dir not in os.environ['PATH'].split(os.pathsep):
+    os.environ['PATH'] = os.pathsep.join((python_dir, os.environ['PATH']))
 
 # Check to make sure we have all our dependencies
 msg_install = f'\nPlease run `{sys.executable} -m pip install -r %s` to install required python dependencies.'
