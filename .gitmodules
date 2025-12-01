@@ -28,3 +28,6 @@
 [submodule "modules/tzarc"]
 	path = modules/tzarc
 	url = https://github.com/tzarc/qmk_modules.git
+[submodule "modules/elpekenin"]
+	path = modules/elpekenin
+	url = https://github.com/elpekenin/qmk_modules.git

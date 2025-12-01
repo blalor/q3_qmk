@@ -1,5 +1,7 @@
 {
     "modules": [
-        "tzarc/globe_key"
+        "tzarc/globe_key",
+        "elpekenin/indicators",
+        "elpekenin/colors"
     ]
 }

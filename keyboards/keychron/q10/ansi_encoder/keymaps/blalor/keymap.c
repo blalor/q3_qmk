@@ -15,7 +15,9 @@
  */
 
 #include QMK_KEYBOARD_H
-#include "rgb_matrix_ledmaps.h"
+
+// https://qmk.elpekenin.dev/modules/indicators.html
+#include "elpekenin/indicators.h"
 
 enum layers {
     BASE,
@@ -69,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         MO(_L2),    KC_LCTL,  KC_LOPT,            KC_LCMD,  KC_SPC,   MO(_L1),                       KC_SPC,             KC_RCMD,                                KC_LEFT,  KC_DOWN,  KC_RGHT),
 
     [_L1] = LAYOUT_ansi_89(
-        RM_TOGG,    _______,  KC_BRID,  KC_BRIU,  KC_MCTL,  KC_LPAD,  RM_VALD,   RM_VALU,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,                      _______,
+        RM_TOGG,    _______,  KC_BRID,  KC_BRIU,  KC_MCTL,  KC_LPAD,  RM_VALD,   RM_VALU,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,                      KC_HOME,
         _______,    _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_DEL,                       _______,
         _______,    RM_TOGG,  RM_NEXT,  RM_VALU,  RM_HUEU,  RM_SATU,  RM_SPDU,   _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,            _______,
         _______,    _______,  RM_PREV,  RM_VALD,  RM_HUED,  RM_SATD,  RM_SPDD,   _______,  _______,  _______,  _______,  _______,  _______,            _______,                      KC_END,
@@ -77,7 +79,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,    _______,  _______,            _______,  _______,  _______,                       _______,            _______,                                _______,  _______,  _______),
 
     [_L2] = LAYOUT_ansi_89(
-        XXXXXXX,    XXXXXXX,  KC_F11,   KC_F12,   KC_F13,   KC_F14,   KC_F15,    KC_F16,   KC_F17,TD(TD_PW_1),TD(TD_PW_2),KC_F20,  KC_F21,   KC_F22,   XXXXXXX,                      XXXXXXX,
+        XXXXXXX,    XXXXXXX,  KC_F11,   KC_F12,   KC_F13,   KC_F14,   KC_F15,    KC_F16,   KC_F17,TD(TD_PW_1),TD(TD_PW_2),KC_F20,  KC_F21,   KC_F22,   XXXXXXX,                      KC_HOME,
         CM_BAIL,    XXXXXXX,  KVM_SW1,  KVM_SW2,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                      XXXXXXX,
         XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,            XXXXXXX,
         XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,                      XXXXXXX,
@@ -86,75 +88,51 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     // alternative to bootmagic entry via escape with QK_BOOT
     [_L3] = LAYOUT_ansi_89(
-        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,                      XXXXXXX,
-        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,                      XXXXXXX,
-        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,            XXXXXXX,            XXXXXXX,
-        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,             XXXXXXX,                      XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,                     KC_HOME,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,                     XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,            XXXXXXX,           XXXXXXX,
+        XXXXXXX,    XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,             XXXXXXX,                     XXXXXXX,
         XXXXXXX,    XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,   XXXXXXX,  XXXXXXX,            XXXXXXX,
-        XXXXXXX,    XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,                       XXXXXXX,            XXXXXXX,                                 QK_MAKE,  XXXXXXX,  QK_BOOT),
+        XXXXXXX,    XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,                       XXXXXXX,            XXXXXXX,                                 QK_MAKE,  XXXXXXX, QK_BOOT),
 };
 
+#define LYRIND 0x11, 0x11, 0x11
+#define RGB_OFFBLUE 0x00, 0x80, 0xFF // new color: blue with a hint of green (RGB_OFFBLUE)
+#define RGB_ORANGE2 0xFF, 0x28, 0x00 // fix: reduced green from 80 to 28 (RGB_ORANGE2)
+#define RGB_DRKMGNT 0x0F, 0x00, 0x0F // darker magenta; regular is too bright
 
-#ifdef RGB_MATRIX_LEDMAPS_ENABLED
+const indicator_t PROGMEM indicators[] = {
+    // layer activation and indication
+    // ASSIGNED_KEYCODE_IN_LAYER_INDICATOR(KC_HOME, BASE, RGB_COLOR(RGB_CYAN)),
+    KEYCODE_INDICATOR(MO(_L1), RGB_COLOR(RGB_BLUE)),
+    KEYCODE_IN_LAYER_INDICATOR(KC_HOME, _L1, RGB_COLOR(RGB_BLUE)),
 
-#define ______ { RGB_OFF }
-#define LYRIND { 0x11, 0x11, 0x11 }
+    KEYCODE_INDICATOR(MO(_L2), RGB_COLOR(RGB_DRKMGNT)),
+    KEYCODE_IN_LAYER_INDICATOR(KC_HOME, _L2, RGB_COLOR(RGB_DRKMGNT)),
 
-#define OFFBLU {0x00, 0x80, 0xFF}      // new color: blue with a hint of green (RGB_OFFBLUE)
-#define RGB_DKRED 0x28, 0x00, 0x00        // new color: dark red
-#define ORANG2 {0xFF, 0x28, 0x00}      // fix: reduced green from 80 to 28 (RGB_ORANGE2)
-#define RGB_PURPLE2 0x80, 0x00, 0xFF      // fix: increased red from 7A to 80
-#define RGB_SPRINGGREEN2 0x00, 0xFF, 0x10 // fix: blue was 80, now 10
-#define RGB_YELLOW2 0xFF, 0xB0, 0x00      // fix: green was FF, now B0
+    KEYCODE_INDICATOR(MO(_L3), RGB_COLOR(RGB_WHITE)),
+    KEYCODE_IN_LAYER_INDICATOR(KC_HOME, _L3, RGB_COLOR(RGB_WHITE)),
 
+    // video conference mute and bail
+    KEYCODE_INDICATOR(_CM, RGB_COLOR(RGB_ORANGE2)),
+    KEYCODE_INDICATOR(CM_BAIL, RGB_COLOR(RGB_RED)),
 
-const ledmap PROGMEM ledmaps[] = {
-    /*
-        rot btn   Esc       F1        F2        F3        F4        F5        F6        F7        F8        F9        F10       F11       F12                 Ins                 Del
-        M1        `         1         2         3         4         5         6         7         8         9         0         -         =         ⌫                   Pgup
-        M2        →         Q         W         E         R         T         Y         U         I         O         P         [         ]         \                   Pgdn
-        M3        Caps      A         S         D         F         G         H         J         K         L         ;         '                   ⏎                   Home
-        M4        ⇧                   Z         X         C         V         B         B         N         M         ,         .         /         ⇧         Up
-        M5        ^         ⌥                   ⌘         Space     fn                            Space               ⌘                             Left      Down      Rght
-    */
-    [BASE] = RGB_MATRIX_LAYOUT_LEDMAP(
-                  ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ORANG2,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,
-        LYRIND,   ______,   ______,             ______,   ______,   LYRIND,                       ______,             ______,                       ______,   ______,   ______
-    ),
+    // media
+    KEYCODE_INDICATOR(KC_MPRV, RGB_COLOR(RGB_OFFBLUE)),
+    KEYCODE_INDICATOR(KC_MNXT, RGB_COLOR(RGB_OFFBLUE)),
 
-    [_L1]  = RGB_MATRIX_LAYOUT_LEDMAP(
-                  ______,   ______,   ______,   ______,   ______,   ______,   ______,   OFFBLU,   ______,   OFFBLU,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,
-        ______,   ______,   ______,             ______,   ______,   ______,                       ______,             ______,                       ______,   ______,   ______
-    ),
+    // passwords
+    KEYCODE_INDICATOR(TD(TD_PW_1), RGB_COLOR(RGB_PURPLE)),
+    KEYCODE_INDICATOR(TD(TD_PW_2), RGB_COLOR(RGB_PURPLE)),
 
-    [_L2]  = RGB_MATRIX_LAYOUT_LEDMAP(
-                  ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   PURPLE,   PURPLE,   ______,   ______,   ______,   ______,             ______,
-        RED,      ______,   RED,      GREEN,    ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,
-        ______,   ______,   ______,             ______,   ______,   LYRIND,                       ______,             ______,                       ______,   ______,   ______
-    ),
+    // kvm
+    KEYCODE_INDICATOR(KVM_SW1, RGB_COLOR(RGB_RED)),
+    KEYCODE_INDICATOR(KVM_SW2, RGB_COLOR(RGB_GREEN)),
 
-    [_L3]  = RGB_MATRIX_LAYOUT_LEDMAP(
-                  ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,
-        ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,             ______,
-        ______,   ______,             ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,   ______,
-        ______,   ______,   ______,             ______,   ______,   ______,                       ______,             ______,                       GREEN,    ______,   RED
-    ),
+    // qmk compile and flash
+    KEYCODE_INDICATOR(QK_BOOT, RGB_COLOR(RGB_RED)),
+    KEYCODE_INDICATOR(QK_MAKE, RGB_COLOR(RGB_GREEN)),
 };
-#endif // RGB_MATRIX_LEDMAPS_ENABLED
-// clang-format on
 
 #if defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
